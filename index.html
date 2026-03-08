@@ -4,20 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RedBot</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <meta property="og:title" content="RedBot" />
+  <meta property="og:description" content="Un bot de Discord rápido, limpio y directo al grano." />
+  <meta property="og:image" content="https://redbot.me/redbot-artguru.png" />
+  <meta property="og:url" content="https://redbot.me" />
+  <meta property="og:type" content="website" />
+  <meta name="theme-color" content="#ff2e2e" />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
   <style>
     :root {
       --red: #ff2e2e;
       --red-dim: #cc1a1a;
-      --red-glow: rgba(255, 46, 46, 0.15);
+      --red-glow: rgba(255, 46, 46, 0.12);
       --bg: #080808;
-      --surface: #111111;
-      --surface2: #181818;
+      --surface: #0f0f0f;
+      --surface2: #161616;
+      --border: rgba(255,255,255,0.06);
+      --border-red: rgba(255,46,46,0.18);
       --text: #e8e8e8;
-      --muted: #666;
+      --muted: #555;
+      --muted2: #888;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: 'DM Sans', sans-serif;
@@ -27,72 +37,80 @@
       overflow-x: hidden;
     }
 
-    /* Background grid */
-    body::before {
+    body::after {
       content: '';
       position: fixed;
       inset: 0;
       background-image:
-        linear-gradient(rgba(255,46,46,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,46,46,0.03) 1px, transparent 1px);
-      background-size: 60px 60px;
+        linear-gradient(rgba(255,46,46,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,46,46,0.025) 1px, transparent 1px);
+      background-size: 80px 80px;
       pointer-events: none;
       z-index: 0;
     }
 
-    /* Glow blob */
-    body::after {
-      content: '';
-      position: fixed;
-      top: -200px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 800px;
-      height: 600px;
-      background: radial-gradient(ellipse, rgba(255,46,46,0.08) 0%, transparent 70%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
+    /* ── NAV ── */
     nav {
       position: fixed;
       top: 0;
       width: 100%;
-      padding: 20px 60px;
+      padding: 18px 60px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       z-index: 100;
-      background: rgba(8,8,8,0.8);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255,46,46,0.08);
+      background: rgba(8,8,8,0.88);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
     }
 
     .nav-logo {
       font-family: 'Syne', sans-serif;
       font-weight: 800;
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       color: var(--red);
       letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-logo img {
+      width: 26px;
+      height: 26px;
+      border-radius: 6px;
+      object-fit: cover;
     }
 
     .nav-links {
       display: flex;
-      gap: 32px;
+      gap: 36px;
       list-style: none;
+      align-items: center;
     }
 
     .nav-links a {
       color: var(--muted);
       text-decoration: none;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 500;
       transition: color 0.2s;
     }
 
     .nav-links a:hover { color: var(--text); }
 
-    /* Hero */
+    .nav-cta {
+      padding: 8px 20px;
+      background: var(--red) !important;
+      color: white !important;
+      border-radius: 6px;
+      font-weight: 600 !important;
+      transition: background 0.2s !important;
+    }
+
+    .nav-cta:hover { background: var(--red-dim) !important; }
+
+    /* ── HERO ── */
     .hero {
       position: relative;
       z-index: 1;
@@ -102,302 +120,337 @@
       justify-content: center;
       align-items: center;
       text-align: center;
-      padding: 120px 40px 80px;
+      padding: 140px 40px 60px;
     }
+
+    .orb {
+      position: absolute;
+      top: 5%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 700px;
+      height: 600px;
+      background: radial-gradient(ellipse, rgba(255,46,46,0.065) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .hero > * { position: relative; z-index: 1; }
 
     .badge {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(255,46,46,0.08);
-      border: 1px solid rgba(255,46,46,0.2);
-      color: var(--red);
-      font-size: 0.78rem;
-      font-weight: 500;
-      padding: 6px 14px;
+      background: rgba(255,46,46,0.06);
+      border: 1px solid var(--border-red);
+      color: #ff6b6b;
+      font-size: 0.7rem;
+      font-weight: 600;
+      padding: 5px 14px;
       border-radius: 100px;
-      margin-bottom: 32px;
-      letter-spacing: 0.5px;
+      margin-bottom: 36px;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      animation: fadeUp 0.6s ease both;
+      animation: fadeUp 0.7s ease both;
     }
 
-    .badge::before {
-      content: '';
-      width: 6px;
-      height: 6px;
+    .badge-dot {
+      width: 5px;
+      height: 5px;
       background: var(--red);
       border-radius: 50%;
       animation: pulse 2s infinite;
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.8); }
+      0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255,46,46,0.5); }
+      50% { opacity: 0.6; box-shadow: 0 0 0 5px rgba(255,46,46,0); }
     }
 
     h1 {
       font-family: 'Syne', sans-serif;
       font-weight: 800;
-      font-size: clamp(4rem, 10vw, 8rem);
-      letter-spacing: -4px;
-      line-height: 0.9;
-      margin-bottom: 28px;
-      animation: fadeUp 0.6s 0.1s ease both;
+      font-size: clamp(4.5rem, 11vw, 9rem);
+      letter-spacing: -5px;
+      line-height: 0.88;
+      margin-bottom: 30px;
+      animation: fadeUp 0.7s 0.1s ease both;
     }
 
-    h1 span {
+    h1 .accent {
       color: var(--red);
       position: relative;
+      display: inline-block;
     }
 
-    h1 span::after {
+    h1 .accent::after {
       content: '';
       position: absolute;
-      bottom: -4px;
+      bottom: 4px;
       left: 0;
       width: 100%;
-      height: 3px;
-      background: var(--red);
+      height: 4px;
+      background: linear-gradient(90deg, var(--red), transparent);
       border-radius: 2px;
     }
 
     .subtitle {
-      font-size: 1.15rem;
-      color: var(--muted);
-      max-width: 480px;
-      line-height: 1.7;
-      margin-bottom: 48px;
+      font-size: 1.05rem;
+      color: var(--muted2);
+      max-width: 420px;
+      line-height: 1.75;
+      margin-bottom: 52px;
       font-weight: 300;
-      animation: fadeUp 0.6s 0.2s ease both;
+      animation: fadeUp 0.7s 0.2s ease both;
     }
 
     .cta-group {
       display: flex;
-      gap: 16px;
+      gap: 14px;
       flex-wrap: wrap;
       justify-content: center;
-      animation: fadeUp 0.6s 0.3s ease both;
+      animation: fadeUp 0.7s 0.3s ease both;
     }
 
     .btn-primary {
-      padding: 14px 32px;
+      padding: 13px 30px;
       background: var(--red);
       color: white;
       text-decoration: none;
       border-radius: 8px;
       font-weight: 600;
-      font-size: 0.95rem;
-      transition: all 0.2s;
+      font-size: 0.92rem;
+      transition: all 0.25s;
       font-family: 'DM Sans', sans-serif;
     }
 
     .btn-primary:hover {
       background: var(--red-dim);
       transform: translateY(-2px);
-      box-shadow: 0 8px 32px rgba(255,46,46,0.3);
+      box-shadow: 0 12px 40px rgba(255,46,46,0.25);
     }
 
     .btn-secondary {
-      padding: 14px 32px;
+      padding: 13px 30px;
       background: transparent;
-      color: var(--text);
+      color: var(--muted2);
       text-decoration: none;
       border-radius: 8px;
       font-weight: 500;
-      font-size: 0.95rem;
-      border: 1px solid rgba(255,255,255,0.1);
-      transition: all 0.2s;
+      font-size: 0.92rem;
+      border: 1px solid var(--border);
+      transition: all 0.25s;
       font-family: 'DM Sans', sans-serif;
     }
 
     .btn-secondary:hover {
-      border-color: rgba(255,255,255,0.25);
+      border-color: rgba(255,255,255,0.18);
+      color: var(--text);
       transform: translateY(-2px);
     }
 
-    /* Stats */
-    .stats {
+    /* ── STATS ── */
+    .stats-wrap {
       position: relative;
       z-index: 1;
       display: flex;
       justify-content: center;
-      gap: 0;
       padding: 0 40px 100px;
-      animation: fadeUp 0.6s 0.4s ease both;
+      animation: fadeUp 0.7s 0.4s ease both;
+    }
+
+    .stats {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--surface);
     }
 
     .stat {
-      padding: 32px 60px;
-      border: 1px solid rgba(255,255,255,0.06);
+      padding: 28px 52px;
       text-align: center;
+      position: relative;
     }
 
-    .stat:first-child { border-radius: 12px 0 0 12px; }
-    .stat:last-child { border-radius: 0 12px 12px 0; border-left: none; }
-    .stat:not(:first-child):not(:last-child) { border-left: none; }
+    .stat:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 20%;
+      height: 60%;
+      width: 1px;
+      background: var(--border);
+    }
 
     .stat-num {
       font-family: 'Syne', sans-serif;
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: 800;
       color: var(--red);
       display: block;
+      letter-spacing: -1px;
     }
 
     .stat-label {
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       color: var(--muted);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 1px;
       margin-top: 4px;
+      font-weight: 500;
     }
 
-    /* Features */
-    .features {
+    /* ── SECTIONS ── */
+    .section {
       position: relative;
       z-index: 1;
-      max-width: 1000px;
+      max-width: 1040px;
       margin: 0 auto;
       padding: 0 40px 120px;
     }
 
-    .section-label {
-      font-size: 0.75rem;
+    .section-eyebrow {
+      font-size: 0.68rem;
       color: var(--red);
       text-transform: uppercase;
-      letter-spacing: 2px;
+      letter-spacing: 2.5px;
       font-weight: 600;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-eyebrow::after {
+      content: '';
+      height: 1px;
+      width: 36px;
+      background: var(--border-red);
     }
 
     .section-title {
       font-family: 'Syne', sans-serif;
-      font-size: clamp(2rem, 4vw, 3rem);
+      font-size: clamp(1.9rem, 3.5vw, 2.7rem);
       font-weight: 800;
       letter-spacing: -1.5px;
-      margin-bottom: 60px;
+      margin-bottom: 52px;
       line-height: 1.1;
     }
 
-    .grid {
+    /* ── FEATURES ── */
+    .features-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 1px;
-      background: rgba(255,255,255,0.06);
+      background: var(--border);
       border-radius: 16px;
       overflow: hidden;
+      border: 1px solid var(--border);
     }
 
     .feature-card {
       background: var(--surface);
-      padding: 36px 32px;
+      padding: 34px 30px;
       transition: background 0.2s;
     }
 
     .feature-card:hover { background: var(--surface2); }
 
+    .feature-card:hover .feature-icon {
+      background: rgba(255,46,46,0.15);
+      border-color: rgba(255,46,46,0.3);
+    }
+
     .feature-icon {
-      width: 40px;
-      height: 40px;
+      width: 38px;
+      height: 38px;
       background: var(--red-glow);
-      border: 1px solid rgba(255,46,46,0.2);
+      border: 1px solid var(--border-red);
       border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.1rem;
-      margin-bottom: 20px;
+      font-size: 1rem;
+      margin-bottom: 18px;
+      transition: all 0.2s;
     }
 
     .feature-title {
       font-family: 'Syne', sans-serif;
       font-weight: 700;
-      font-size: 1.05rem;
-      margin-bottom: 10px;
+      font-size: 1rem;
+      margin-bottom: 8px;
       letter-spacing: -0.3px;
     }
 
     .feature-desc {
-      font-size: 0.88rem;
-      color: var(--muted);
-      line-height: 1.6;
+      font-size: 0.84rem;
+      color: var(--muted2);
+      line-height: 1.65;
     }
 
-    /* Legal section */
-    .legal-section {
-      position: relative;
-      z-index: 1;
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 0 40px 120px;
-    }
-
-    .legal-cards {
+    /* ── LEGAL ── */
+    .legal-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 16px;
+      gap: 14px;
     }
 
     .legal-card {
       background: var(--surface);
-      border: 1px solid rgba(255,255,255,0.06);
-      border-radius: 16px;
-      padding: 40px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 36px;
       text-decoration: none;
       color: var(--text);
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       transition: all 0.2s;
       position: relative;
-      overflow: hidden;
     }
 
-    .legal-card::after {
-      content: '→';
+    .legal-arrow {
       position: absolute;
-      top: 40px;
-      right: 40px;
+      top: 36px;
+      right: 36px;
       color: var(--muted);
-      font-size: 1.2rem;
       transition: all 0.2s;
     }
 
     .legal-card:hover {
-      border-color: rgba(255,46,46,0.25);
+      border-color: var(--border-red);
       transform: translateY(-3px);
-      box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.3);
     }
 
-    .legal-card:hover::after {
+    .legal-card:hover .legal-arrow {
       color: var(--red);
-      right: 32px;
+      right: 28px;
     }
 
-    .legal-icon {
-      font-size: 1.5rem;
-    }
+    .legal-icon { font-size: 1.3rem; }
 
     .legal-title {
       font-family: 'Syne', sans-serif;
       font-weight: 700;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       letter-spacing: -0.3px;
+      padding-right: 28px;
     }
 
     .legal-desc {
-      font-size: 0.88rem;
-      color: var(--muted);
+      font-size: 0.84rem;
+      color: var(--muted2);
       line-height: 1.6;
     }
 
-    /* Footer */
+    /* ── FOOTER ── */
     footer {
       position: relative;
       z-index: 1;
-      border-top: 1px solid rgba(255,255,255,0.06);
-      padding: 32px 60px;
+      border-top: 1px solid var(--border);
+      padding: 26px 60px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -407,20 +460,15 @@
       font-family: 'Syne', sans-serif;
       font-weight: 800;
       color: var(--red);
+      font-size: 1rem;
     }
 
-    .footer-text {
-      font-size: 0.82rem;
-      color: var(--muted);
-    }
+    .footer-text { font-size: 0.78rem; color: var(--muted); }
 
-    .footer-links {
-      display: flex;
-      gap: 24px;
-    }
+    .footer-links { display: flex; gap: 24px; }
 
     .footer-links a {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       color: var(--muted);
       text-decoration: none;
       transition: color 0.2s;
@@ -429,62 +477,80 @@
     .footer-links a:hover { color: var(--text); }
 
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(20px); }
+      from { opacity: 0; transform: translateY(22px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     @media (max-width: 768px) {
-      nav { padding: 16px 24px; }
+      nav { padding: 14px 20px; }
       .nav-links { display: none; }
-      .grid { grid-template-columns: 1fr; }
-      .legal-cards { grid-template-columns: 1fr; }
-      .stats { flex-direction: column; align-items: center; }
-      .stat { border-radius: 0 !important; border-left: 1px solid rgba(255,255,255,0.06) !important; width: 100%; }
-      footer { flex-direction: column; gap: 16px; text-align: center; padding: 24px; }
+      h1 { letter-spacing: -3px; }
+      .stats { flex-direction: column; }
+      .stat:not(:last-child)::after { display: none; }
+      .stat { border-bottom: 1px solid var(--border); }
+      .features-grid { grid-template-columns: 1fr; }
+      .fun-grid { grid-template-columns: 1fr; }
+      .legal-grid { grid-template-columns: 1fr; }
+      .section { padding: 0 20px 80px; }
+      footer { flex-direction: column; gap: 14px; text-align: center; padding: 20px; }
     }
   </style>
 </head>
 <body>
 
   <nav>
-    <div class="nav-logo">RedBot</div>
+    <div class="nav-logo">
+      <img src="redbot-artguru.png" alt="RedBot" onerror="this.style.display='none'">
+      RedBot
+    </div>
     <ul class="nav-links">
       <li><a href="#features">Funciones</a></li>
+      <li><a href="#fun">Diversión</a></li>
       <li><a href="privacy.html">Privacidad</a></li>
       <li><a href="tos.html">Términos</a></li>
-      <li><a href="https://discord.gg/sYdyS8Ez3s" target="_blank">Soporte</a></li>
+      <li><a href="https://discord.gg/sYdyS8Ez3s" target="_blank" class="nav-cta">Soporte</a></li>
     </ul>
   </nav>
 
   <section class="hero">
-    <div class="badge">Bot de Discord</div>
-    <h1>Red<span>Bot</span></h1>
+    <div class="orb"></div>
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Bot de Discord
+    </div>
+    <h1>Red<span class="accent">Bot</span></h1>
     <p class="subtitle">Un bot de Discord rápido, limpio y directo al grano. Sin relleno, sin drama.</p>
     <div class="cta-group">
-      <a class="btn-primary" href="https://discord.com/oauth2/authorize?client_id=1020772849906098186&permissions=0&scope=bot" target="_blank">Invitar al servidor</a>
+      <a class="btn-primary" href="https://discord.com/oauth2/authorize?client_id=1020772849906098186&permissions=0&scope=bot" target="_blank">Agregar al servidor</a>
       <a class="btn-secondary" href="https://discord.gg/sYdyS8Ez3s" target="_blank">Servidor de soporte</a>
     </div>
   </section>
 
-  <div class="stats">
-    <div class="stat">
-      <span class="stat-num">20+</span>
-      <span class="stat-label">Comandos</span>
-    </div>
-    <div class="stat">
-      <span class="stat-num">Slash</span>
-      <span class="stat-label">& Prefix</span>
-    </div>
-    <div class="stat">
-      <span class="stat-num">AI</span>
-      <span class="stat-label">Integrado</span>
+  <div class="stats-wrap">
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-num">85+</span>
+        <span class="stat-label">Servidores</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">45k</span>
+        <span class="stat-label">Usuarios</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">25+</span>
+        <span class="stat-label">Comandos</span>
+      </div>
+      <div class="stat">
+        <span class="stat-num">AI</span>
+        <span class="stat-label">Integrado</span>
+      </div>
     </div>
   </div>
 
-  <section class="features" id="features">
-    <div class="section-label">Funciones</div>
-    <div class="section-title">Todo lo que necesitás</div>
-    <div class="grid">
+  <section class="section" id="features">
+    <div class="section-eyebrow">Funciones</div>
+    <div class="section-title">Todo lo que necesitas</div>
+    <div class="features-grid">
       <div class="feature-card">
         <div class="feature-icon">👤</div>
         <div class="feature-title">Información de usuarios</div>
@@ -493,41 +559,90 @@
       <div class="feature-card">
         <div class="feature-icon">🏠</div>
         <div class="feature-title">Info del servidor</div>
-        <div class="feature-desc">Logo, emojis, roles y estadísticas del servidor.</div>
+        <div class="feature-desc">Logo, emojis, roles y estadísticas con navegación interactiva.</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🎭</div>
         <div class="feature-title">Gestión de roles</div>
-        <div class="feature-desc">Asigná, quitá y consultá información de roles fácilmente.</div>
+        <div class="feature-desc">Asigna, quita y consulta información de roles fácilmente.</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🤖</div>
         <div class="feature-title">IA integrada</div>
-        <div class="feature-desc">Preguntale lo que quieras. Responde con contexto y memoria de conversación.</div>
+        <div class="feature-desc">Pregunta lo que quieras. Responde con contexto y memoria de conversación.</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">⚡</div>
         <div class="feature-title">Slash & Prefix</div>
-        <div class="feature-desc">Soporte completo para comandos slash y de prefijo personalizable.</div>
+        <div class="feature-desc">Soporte completo para comandos slash y de prefijo personalizable por servidor.</div>
       </div>
       <div class="feature-card">
         <div class="feature-icon">🔧</div>
         <div class="feature-title">Utilidades</div>
-        <div class="feature-desc">Ping, info del bot, invitación y más comandos de utilidad.</div>
+        <div class="feature-desc">Ping, info del bot, invitación y más comandos de utilidad general.</div>
       </div>
     </div>
   </section>
 
-  <section class="legal-section">
-    <div class="section-label">Legal</div>
+  <section class="section" id="fun">
+    <div class="section-eyebrow">Diversión</div>
+    <div class="section-title">Con personalidad propia</div>
+    <div class="fun-grid">
+      <div class="fun-card">
+        <div class="fun-card-header">
+          <div class="fun-icon">💬</div>
+          <div class="fun-title">Opinión</div>
+          <span class="fun-cmd">/fun opinion</span>
+        </div>
+        <div class="fun-desc">Pide una opinión sin filtro sobre cualquier tema. Sin suavizar, sin diplomacia innecesaria.</div>
+      </div>
+      <div class="fun-card">
+        <div class="fun-card-header">
+          <div class="fun-icon">🎯</div>
+          <div class="fun-title">Crítica</div>
+          <span class="fun-cmd">/fun critica</span>
+        </div>
+        <div class="fun-desc">Una crítica directa de lo que sea. Películas, tendencias, lo que quieras.</div>
+      </div>
+      <div class="fun-card">
+        <div class="fun-card-header">
+          <div class="fun-icon">📝</div>
+          <div class="fun-title">Excusa</div>
+          <span class="fun-cmd">/fun excusa</span>
+        </div>
+        <div class="fun-desc">Genera una excusa ridícula pero creativa para cualquier situación.</div>
+      </div>
+      <div class="fun-card">
+        <div class="fun-card-header">
+          <div class="fun-icon">🔍</div>
+          <div class="fun-title">Teoría</div>
+          <span class="fun-cmd">/fun teoria</span>
+        </div>
+        <div class="fun-desc">Una teoría conspirativa sobre cualquier cosa. Presentada como si fuera verdad.</div>
+      </div>
+      <div class="fun-card">
+        <div class="fun-card-header">
+          <div class="fun-icon">🌦️</div>
+          <div class="fun-title">Forecast</div>
+          <span class="fun-cmd">/fun forecast</span>
+        </div>
+        <div class="fun-desc">Pronóstico del clima social del servidor. Meteorología aplicada al comportamiento humano en Discord.</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-eyebrow">Legal</div>
     <div class="section-title">Transparencia</div>
-    <div class="legal-cards">
+    <div class="legal-grid">
       <a class="legal-card" href="privacy.html">
+        <span class="legal-arrow">→</span>
         <div class="legal-icon">🔐</div>
         <div class="legal-title">Política de Privacidad</div>
         <div class="legal-desc">Qué datos procesamos, cómo los usamos y por qué. Sin letra chica.</div>
       </a>
       <a class="legal-card" href="tos.html">
+        <span class="legal-arrow">→</span>
         <div class="legal-icon">📋</div>
         <div class="legal-title">Términos de Servicio</div>
         <div class="legal-desc">Las condiciones de uso de RedBot. Claro, directo y sin vueltas.</div>
